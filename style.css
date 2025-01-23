@@ -151,10 +151,10 @@ output {
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1;
-  margin-top: 22px;
+  margin-top: 16px;
 
   .btn-large {
-    height: 100px;
+    height: 105px;
   }
 }
 
