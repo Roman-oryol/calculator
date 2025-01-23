@@ -48,7 +48,7 @@ const operations = {
   '+': (a, b) => a + b,
   '-': (a, b) => a - b,
   '*': (a, b) => a * b,
-  '/': (a, b) => a / b,
+  '/': (a, b) => (b !== 0 ? a / b : 'Error'),
 };
 
 const operate = (operator, a, b) => operations[operator](a, b);
