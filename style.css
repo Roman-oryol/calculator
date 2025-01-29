@@ -68,8 +68,13 @@ output {
 .history {
   height: 35px;
   font-size: 1.5rem;
-
   color: var(--color-gray);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.history::-webkit-scrollbar {
+  display: none;
 }
 
 .current-value {
