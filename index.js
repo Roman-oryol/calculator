@@ -8,14 +8,11 @@ const equalButton = document.querySelector('.equal');
 const pointButton = document.querySelector('.number[data-value="."]');
 
 const MAX_LENGTH = 10;
+// const MAX_LENGTH_HISTORY = 20;
 let enteredValues = [];
 let currentValue = 0;
 let isError = false;
-
 let previousValue = null;
-
-let a;
-let b;
 let operator = null;
 let result;
 
@@ -37,10 +34,6 @@ const displayValue = (enteredValue) => {
 
   enteredValues.push(enteredValue);
   currentValueElement.textContent = enteredValues.join('');
-};
-
-const displayResult = (result) => {
-  currentValueElement.textContent = result;
 };
 
 const updateCurrentValue = (enteredValues) => {
@@ -67,6 +60,22 @@ const toggleOperatorButtons = (isError) => {
   });
 };
 
+const displayError = () => {
+  isError = true;
+  toggleOperatorButtons(isError);
+  currentValueElement.classList.add('current-value--error');
+  currentValueElement.textContent = 'Division by zero is not possible';
+  pointButton.disabled = true;
+};
+
+const formatResult = (result) => {
+  const resultString = result.toString();
+  if (resultString.length > MAX_LENGTH) {
+    return parseFloat(result).toExponential(5);
+  }
+  return result;
+};
+
 const handleBackspaceClick = () => {
   if (isError) {
     resetAll();
@@ -91,8 +100,20 @@ const handleEnterNumber = (evt) => {
     resetAll();
   }
 
+  if (result) {
+    historyElement.textContent = '';
+    result = null;
+    previousValue = null;
+  }
   const enteredValue = evt.target.dataset.value;
 
+  if (
+    !enteredValues.includes('.') &&
+    enteredValues.length == 1 &&
+    enteredValues[0] == 0
+  ) {
+    enteredValues = [];
+  }
   displayValue(enteredValue);
   updateCurrentValue(enteredValues);
 };
@@ -110,17 +131,13 @@ const handleOperation = (evt) => {
   }
 
   if (result === 'Error') {
-    isError = true;
-    toggleOperatorButtons(isError);
-    currentValueElement.classList.add('current-value--error');
-    currentValueElement.textContent = 'Division by zero is not possible';
-    pointButton.disabled = true;
+    displayError();
     return;
   }
 
   if (result) {
     previousValue = result;
-    currentValueElement.textContent = result;
+    currentValueElement.textContent = formatResult(result);
   }
 
   operator = selectedOperator;
@@ -128,18 +145,26 @@ const handleOperation = (evt) => {
   historyElement.textContent = previousValue + operator;
   enteredValues = [];
   currentValue = 0;
+  result = null;
 };
 
 const handleEqualClick = () => {
-  b = currentValue;
+  if (isError) {
+    resetAll();
+    return;
+  }
 
-  result = operate(operator, a, b);
-  enteredValues = [];
-  displayResult(result);
+  if (previousValue) {
+    result = operate(operator, previousValue, currentValue);
+    historyElement.textContent = `${previousValue}${operator}${currentValue}=`;
+    currentValueElement.textContent = formatResult(result);
+    previousValue = result;
+    enteredValues = [];
+  }
 
-  historyElement.textContent = `${a}${operator}${b}=`;
-  a = result == 'Error' ? null : result;
-  b = null;
+  if (result === 'Error') {
+    displayError();
+  }
 };
 
 numberButtons.forEach((button) => {
@@ -154,7 +179,7 @@ resetButton.addEventListener('click', resetAll);
 
 backspaceButton.addEventListener('click', handleBackspaceClick);
 
-// equalButton.addEventListener('click', handleEqualClick);
+equalButton.addEventListener('click', handleEqualClick);
 
 const operations = {
   '+': (a, b) => a + b,
@@ -164,3 +189,11 @@ const operations = {
 };
 
 const operate = (operator, a, b) => operations[operator](a, b);
+
+// const formatResult = (result) => {
+//   const resultString = result.toString();
+//   if (resultString.length > MAX_LENGTH) {
+//     return parseFloat(result).toExponential(5);
+//   }
+//   return result;
+// };
