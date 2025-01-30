@@ -45,6 +45,11 @@ body {
   margin: 0;
   padding: 0;
   background-color: #daf0ff;
+
+  @media (max-width: 400px) {
+    align-items: flex-start;
+    min-height: auto;
+  }
 }
 
 .app {
