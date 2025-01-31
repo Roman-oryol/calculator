@@ -22,7 +22,10 @@ const operations = {
   '/': (a, b) => (b !== 0 ? a / b : 'Error'),
 };
 
-const operate = (operator, a, b) => operations[operator](a, b);
+const operate = (operator, a, b) => {
+  const result = operations[operator](a, b);
+  return parseFloat(+result.toFixed(10)); // Округление до 10 знаков после запятой
+};
 
 const displayValue = (enteredValue) => {
   const isMaxLength = enteredValues.length >= MAX_LENGTH;
@@ -81,7 +84,7 @@ const formatResult = (result) => {
   if (resultString.length > MAX_LENGTH) {
     return parseFloat(result).toExponential(5);
   }
-  return result;
+  return parseFloat(+result.toFixed(10)); // Округление до 10 знаков после запятой
 };
 
 const handleBackspaceClick = () => {
