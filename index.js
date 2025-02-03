@@ -24,6 +24,9 @@ const operations = {
 
 const operate = (operator, a, b) => {
   const result = operations[operator](a, b);
+  if (result === 'Error') {
+    return result;
+  }
   return parseFloat(+result.toFixed(10)); // Округление до 10 знаков после запятой
 };
 
@@ -188,7 +191,20 @@ const handleEqualClick = () => {
 };
 
 const handleKeyPress = (evt) => {
-  const numericKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+  const numericKeys = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '.',
+    ',',
+  ];
   const operatorKeys = ['+', '-', '/', '*'];
 
   if (numericKeys.includes(evt.key)) {
